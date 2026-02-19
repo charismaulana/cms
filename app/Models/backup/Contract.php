@@ -16,7 +16,6 @@ class Contract extends Model
         'vendor_name',
         'vendor_number',
         'status',
-        'is_active',
         'start_date',
         'end_date',
         'total_value',
@@ -32,7 +31,6 @@ class Contract extends Model
         'total_value' => 'decimal:2',
         'realization_value' => 'decimal:2',
         'prognosa_realization_ids' => 'array',
-        'is_active' => 'boolean',
     ];
 
     /**

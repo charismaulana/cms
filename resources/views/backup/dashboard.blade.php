@@ -33,39 +33,8 @@
 
             <!-- Contracts Table -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-4 sm:p-6">
-                    <!-- Active/Inactive Toggle -->
-                    <div class="mb-4 flex flex-wrap items-center gap-2">
-                        <span class="text-sm font-medium text-gray-700 mr-1">Status Kontrak:</span>
-                        <div class="inline-flex rounded-lg border border-gray-300 overflow-hidden shadow-sm">
-                            <a href="{{ route('dashboard', array_merge(request()->except('active_status', 'page'), ['active_status' => 'active'])) }}"
-                                class="px-4 py-2 text-xs font-bold transition border-r border-gray-300"
-                                style="{{ $activeStatus === 'active' ? 'background-color:#16a34a;color:#fff;' : 'background-color:#fff;color:#374151;' }}">
-                                AKTIF
-                            </a>
-                            <a href="{{ route('dashboard', array_merge(request()->except('active_status', 'page'), ['active_status' => 'inactive'])) }}"
-                                class="px-4 py-2 text-xs font-bold transition border-r border-gray-300"
-                                style="{{ $activeStatus === 'inactive' ? 'background-color:#dc2626;color:#fff;' : 'background-color:#fff;color:#374151;' }}">
-                                TIDAK AKTIF
-                            </a>
-                            <a href="{{ route('dashboard', array_merge(request()->except('active_status', 'page'), ['active_status' => 'all'])) }}"
-                                class="px-4 py-2 text-xs font-bold transition"
-                                style="{{ $activeStatus === 'all' ? 'background-color:#4b5563;color:#fff;' : 'background-color:#fff;color:#374151;' }}">
-                                SEMUA
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="overflow-x-auto" x-data="{
-                        showHeaderInfo: false,
-                        headerTitle: '',
-                        headerDesc: '',
-                        openInfo(title, desc) {
-                            this.headerTitle = title;
-                            this.headerDesc = desc;
-                            this.showHeaderInfo = true;
-                        }
-                    }">
+                <div class="p-6">
+                    <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 text-sm">
                             <thead class="bg-pertamina-blue text-white">
                                 @php
@@ -91,9 +60,6 @@
                                 @endphp
                                 <tr>
                                     <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider">No</th>
-                                    <th class="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider">
-                                        {{ __('contracts.actions') }}
-                                    </th>
                                     <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider">
                                         <a href="{{ sortUrl('field', $sortColumn, $sortDirection) }}"
                                             class="hover:underline flex items-center gap-1">
@@ -157,38 +123,36 @@
                                     <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider">
                                         {{ __('contracts.last_update') }}
                                     </th>
-                                    <th class="px-3 py-3 text-right text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-800 transition" @click="openInfo('Sisa Anggaran', 'Selisih antara nilai total kontrak dengan nilai realisasi. Menunjukkan berapa banyak anggaran yang masih tersedia.')">
-                                        {{ __('contracts.remaining_value') }} ℹ️
+                                    <th class="px-3 py-3 text-right text-xs font-medium uppercase tracking-wider">
+                                        {{ __('contracts.remaining_value') }}
                                     </th>
-                                    <th class="px-3 py-3 text-right text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-800 transition" @click="openInfo('Sisa (%)', 'Persentase sisa anggaran terhadap nilai total kontrak. Akan berwarna merah jika di bawah ambang batas peringatan.')">
-                                        {{ __('contracts.remaining_percent') }} ℹ️
+                                    <th class="px-3 py-3 text-right text-xs font-medium uppercase tracking-wider">
+                                        {{ __('contracts.remaining_percent') }}
                                     </th>
-                                    <th class="px-3 py-3 text-right text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-800 transition" @click="openInfo('Prognosa Bulanan', 'Estimasi penggunaan anggaran per bulan berdasarkan rata-rata realisasi sebelumnya. Digunakan untuk menghitung kapan anggaran akan habis.')">
-                                        {{ __('contracts.monthly_prognosis') }} ℹ️
+                                    <th class="px-3 py-3 text-right text-xs font-medium uppercase tracking-wider">
+                                        {{ __('contracts.monthly_prognosis') }}
                                     </th>
-                                    <th class="px-3 py-3 text-right text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-800 transition" @click="openInfo('Habis Dalam (Bulan)', 'Estimasi jumlah bulan hingga anggaran habis berdasarkan prognosa bulanan. Berwarna merah jika di bawah ambang batas peringatan.')">
-                                        {{ __('contracts.months_until_depleted') }} ℹ️
+                                    <th class="px-3 py-3 text-right text-xs font-medium uppercase tracking-wider">
+                                        <a href="{{ sortUrl('months_until_depleted', $sortColumn, $sortDirection) }}"
+                                            class="hover:underline flex items-center justify-end gap-1">
+                                            {{ __('contracts.months_until_depleted') }}
+                                            <span>{!! sortIcon('months_until_depleted', $sortColumn, $sortDirection) !!}</span>
+                                        </a>
                                     </th>
-                                    <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-800 transition" @click="openInfo('Estimasi Habis', 'Tanggal estimasi kapan anggaran akan habis. Dihitung berdasarkan tanggal update terakhir ditambah bulan yang tersisa. Berwarna merah/hijau berdasarkan ambang batas.')">
-                                        {{ __('contracts.estimated_depletion') }} ℹ️
+                                    <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                                        {{ __('contracts.estimated_depletion') }}
                                     </th>
-                                    <th class="px-3 py-3 text-right text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-800 transition" @click="openInfo('Selisih Kerja/Anggaran', 'Selisih hari antara estimasi habis anggaran dengan tanggal berakhir kontrak efektif. Positif berarti anggaran habis sebelum kontrak selesai, negatif berarti sebaliknya.')">
-                                        {{ __('contracts.work_budget_diff') }} ℹ️
+                                    <th class="px-3 py-3 text-right text-xs font-medium uppercase tracking-wider">
+                                        {{ __('contracts.work_budget_diff') }}
+                                    </th>
+                                    <th class="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider">
+                                        {{ __('contracts.actions') }}
                                     </th>
                                 </tr>
                                 <!-- Filter Row -->
                                 <tr class="bg-gray-100">
                                     <form method="GET" action="{{ route('dashboard') }}" id="filterForm">
-                                        <input type="hidden" name="active_status" value="{{ $activeStatus }}">
                                         <td class="px-1 py-2"></td>
-                                        <td class="px-1 py-2">
-                                            <select name="danger"
-                                                class="w-full text-xs text-gray-900 bg-white border-gray-300 rounded"
-                                                onchange="document.getElementById('filterForm').submit()">
-                                                <option value="">Semua</option>
-                                                <option value="warning" {{ $dangerFilter === 'warning' ? 'selected' : '' }}>⚠️ Warning</option>
-                                            </select>
-                                        </td>
                                         <td class="px-1 py-2">
                                             <select name="field"
                                                 class="w-full text-xs text-gray-900 bg-white border-gray-300 rounded"
@@ -236,6 +200,7 @@
                                         <td class="px-1 py-2"></td>
                                         <td class="px-1 py-2"></td>
                                         <td class="px-1 py-2"></td>
+                                        <td class="px-1 py-2"></td>
                                         <td class="px-1 py-2">
                                             <a href="{{ route('dashboard') }}"
                                                 class="text-xs text-red-600 hover:underline">Reset</a>
@@ -247,55 +212,12 @@
                                 @forelse($contracts as $index => $contract)
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-3 py-4 whitespace-nowrap">{{ $contracts->firstItem() + $index }}</td>
-                                        <td class="px-3 py-4 whitespace-nowrap text-center">
-                                            <div class="flex items-center justify-center space-x-2">
-                                                <a href="{{ route('contracts.show', $contract) }}"
-                                                    class="text-pertamina-blue hover:text-pertamina-blue-dark"
-                                                    title="{{ __('contracts.view') }}">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                    </svg>
-                                                </a>
-                                                @if(auth()->user()->canEditContracts())
-                                                    <a href="{{ route('contracts.edit', $contract) }}"
-                                                        class="text-yellow-600 hover:text-yellow-800"
-                                                        title="{{ __('contracts.edit') }}">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                            viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                        </svg>
-                                                    </a>
-                                                    <form action="{{ route('contracts.destroy', $contract) }}" method="POST"
-                                                        class="inline"
-                                                        onsubmit="return confirm('{{ __('contracts.confirm_delete') }}')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="text-red-600 hover:text-red-800"
-                                                            title="{{ __('contracts.delete') }}">
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                                viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2"
-                                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                            </svg>
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                            </div>
-                                        </td>
                                         <td class="px-3 py-4 whitespace-nowrap">{{ $contract->field_label }}</td>
                                         <td class="px-3 py-4 whitespace-nowrap">{{ $contract->fungsi_label }}</td>
                                         <td class="px-3 py-4 whitespace-nowrap font-mono text-xs">
                                             @php
-                                                $hasWarning = ($contract->remaining_percent <= $budgetWarningPercent) ||
-                                                    ($contract->months_until_depleted !== null && $contract->months_until_depleted <= $depleteInWarningMonths);
+                                                $hasWarning = ($contract->remaining_percent <= $budgetWarningPercent) || 
+                                                              ($contract->months_until_depleted !== null && $contract->months_until_depleted <= $depleteInWarningMonths);
                                             @endphp
                                             <div class="flex items-center gap-1" x-data="{ showWarningModal: false }">
                                                 @if($hasWarning)
@@ -308,92 +230,82 @@
                                                     <div x-show="showWarningModal" 
                                                          x-transition
                                                          @click.stop
-                                                         class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60"
-                                                         @click.self="showWarningModal = false"
-                                                         x-cloak>
-                                                        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto max-h-[85vh] overflow-y-auto" @click.stop>
-                                                            <!-- Modal Header -->
-                                                            <div class="sticky top-0 bg-amber-50 border-b border-amber-200 px-5 py-4 rounded-t-xl flex justify-between items-center">
-                                                                <p class="font-bold text-amber-700 text-base flex items-center gap-2">
-                                                                    <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                                         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+                                                         @click.self="showWarningModal = false">
+                                                        <div class="bg-white p-6 rounded-lg shadow-xl max-w-md mx-4" @click.stop>
+                                                            <div class="flex justify-between items-center mb-4">
+                                                                <p class="font-semibold text-amber-600 text-lg flex items-center gap-2">
+                                                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                                                         <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                                                                     </svg>
                                                                     Peringatan Kontrak
                                                                 </p>
-                                                                <button @click="showWarningModal = false" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition">
+                                                                <button @click="showWarningModal = false" class="text-gray-400 hover:text-gray-600">
                                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                                     </svg>
                                                                 </button>
                                                             </div>
-                                                            <!-- Modal Body -->
-                                                            <div class="px-5 py-4">
-                                                                <!-- Contract Info -->
-                                                                <div class="bg-gray-50 p-4 rounded-lg mb-4 text-sm">
-                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                                                        <div>
-                                                                            <span class="text-gray-500 text-xs uppercase tracking-wide">Field</span>
-                                                                            <p class="font-medium text-gray-800">{{ $contract->field_label }}</p>
-                                                                        </div>
-                                                                        <div>
-                                                                            <span class="text-gray-500 text-xs uppercase tracking-wide">Fungsi</span>
-                                                                            <p class="font-medium text-gray-800">{{ $contract->fungsi_label }}</p>
-                                                                        </div>
+                                                            <!-- Contract Info -->
+                                                            <div class="bg-gray-50 p-3 rounded mb-4 text-sm">
+                                                                <div class="grid grid-cols-2 gap-2">
+                                                                    <div>
+                                                                        <span class="text-gray-500">Field:</span>
+                                                                        <span class="font-medium">{{ $contract->field_label }}</span>
                                                                     </div>
-                                                                    <div class="mt-3 pt-3 border-t border-gray-200">
-                                                                        <span class="text-gray-500 text-xs uppercase tracking-wide">No. Kontrak</span>
-                                                                        <p class="font-medium font-mono text-gray-800">{{ $contract->contract_number }}</p>
-                                                                    </div>
-                                                                    <div class="mt-2">
-                                                                        <span class="text-gray-500 text-xs uppercase tracking-wide">Judul</span>
-                                                                        <p class="font-medium text-gray-800">{{ $contract->title }}</p>
+                                                                    <div>
+                                                                        <span class="text-gray-500">Fungsi:</span>
+                                                                        <span class="font-medium">{{ $contract->fungsi_label }}</span>
                                                                     </div>
                                                                 </div>
-                                                                <!-- Warnings -->
-                                                                <div class="space-y-3">
-                                                                    @if($contract->remaining_percent <= $budgetWarningPercent)
-                                                                        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                                                                            <p class="font-semibold text-red-800 text-sm">💰 Sisa Anggaran Rendah</p>
-                                                                            <p class="text-sm text-red-700 mt-1">Sisa anggaran hanya <strong>{{ $contract->remaining_percent }}%</strong> (di bawah batas {{ $budgetWarningPercent }}%)</p>
-                                                                            <p class="text-xs text-red-600 mt-1">Sisa: Rp {{ number_format($contract->remaining_value, 0, ',', '.') }}</p>
-                                                                        </div>
-                                                                    @endif
-                                                                    @if($contract->months_until_depleted !== null && $contract->months_until_depleted <= $depleteInWarningMonths)
-                                                                        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                                                                            <p class="font-semibold text-red-800 text-sm">💸 Anggaran Akan Segera Habis</p>
-                                                                            <p class="text-sm text-red-700 mt-1">Anggaran diperkirakan habis dalam <strong>{{ $contract->months_until_depleted }} bulan</strong> (di bawah batas {{ $depleteInWarningMonths }} bulan)</p>
-                                                                            <p class="text-xs text-red-600 mt-1">Est. Depletion: {{ $contract->estimated_depletion_month }}</p>
-                                                                        </div>
-                                                                    @endif
-                                                                    @php
-                                                                        $effectiveEnd = \Carbon\Carbon::parse($contract->effective_end_date);
-                                                                        $baseEnd = $contract->end_date;
-                                                                        $daysLeft = round(now()->diffInDays($effectiveEnd, false));
-                                                                        $durationThresholdDays = $reminderMonths * 30;
-                                                                    @endphp
-                                                                    @if($effectiveEnd->ne($baseEnd) && $daysLeft >= 0)
-                                                                        @if($daysLeft <= $durationThresholdDays)
-                                                                            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                                                                                <p class="font-semibold text-red-800 text-sm">📅 Durasi Kontrak Akan Berakhir</p>
-                                                                                <p class="text-sm text-red-700 mt-1">Effective End Date: <strong>{{ $effectiveEnd->format('d M Y') }}</strong></p>
-                                                                                <p class="text-sm text-red-700">Sisa waktu: <strong>{{ $daysLeft }} hari</strong> (di bawah batas {{ $reminderMonths }} bulan)</p>
-                                                                            </div>
-                                                                        @else
-                                                                            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
-                                                                                <p class="font-semibold text-green-800 text-sm">📅 Durasi Kontrak</p>
-                                                                                <p class="text-sm text-green-700 mt-1">Effective End Date: <strong>{{ $effectiveEnd->format('d M Y') }}</strong></p>
-                                                                                <p class="text-sm text-green-700">Sisa waktu: <strong>{{ $daysLeft }} hari</strong></p>
-                                                                            </div>
-                                                                        @endif
-                                                                    @endif
+                                                                <div class="mt-2">
+                                                                    <span class="text-gray-500">No. Kontrak:</span>
+                                                                    <span class="font-medium font-mono">{{ $contract->contract_number }}</span>
+                                                                </div>
+                                                                <div class="mt-1">
+                                                                    <span class="text-gray-500">Judul:</span>
+                                                                    <span class="font-medium">{{ $contract->title }}</span>
                                                                 </div>
                                                             </div>
-                                                            <!-- Modal Footer -->
-                                                            <div class="px-5 py-3 bg-gray-50 border-t border-gray-200 rounded-b-xl text-center">
-                                                                <a href="{{ route('contracts.show', $contract) }}" class="inline-flex items-center gap-1 text-sm font-medium text-pertamina-blue hover:underline">
-                                                                    Lihat Detail Kontrak
-                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                                                                </a>
+                                                            <div class="space-y-4">
+                                                                @if($contract->remaining_percent <= $budgetWarningPercent)
+                                                                    <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded">
+                                                                        <p class="font-semibold text-red-800">💰 Sisa Anggaran Rendah</p>
+                                                                        <p class="text-sm text-red-700">Sisa anggaran hanya <strong>{{ $contract->remaining_percent }}%</strong> (di bawah batas {{ $budgetWarningPercent }}%)</p>
+                                                                        <p class="text-xs text-red-600 mt-1">Sisa: Rp {{ number_format($contract->remaining_value, 0, ',', '.') }}</p>
+                                                                    </div>
+                                                                @endif
+                                                                @if($contract->months_until_depleted !== null && $contract->months_until_depleted <= $depleteInWarningMonths)
+                                                                    <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded">
+                                                                        <p class="font-semibold text-red-800">💸 Anggaran Akan Segera Habis</p>
+                                                                        <p class="text-sm text-red-700">Anggaran diperkirakan habis dalam <strong>{{ $contract->months_until_depleted }} bulan</strong> (di bawah batas {{ $depleteInWarningMonths }} bulan)</p>
+                                                                        <p class="text-xs text-red-600 mt-1">Est. Depletion: {{ $contract->estimated_depletion_month }}</p>
+                                                                    </div>
+                                                                @endif
+                                                                @php
+                                                                    $effectiveEnd = \Carbon\Carbon::parse($contract->effective_end_date);
+                                                                    $baseEnd = $contract->end_date;
+                                                                    $daysLeft = round(now()->diffInDays($effectiveEnd, false));
+                                                                    $durationThresholdDays = $reminderMonths * 30;
+                                                                @endphp
+                                                                @if($effectiveEnd->ne($baseEnd) && $daysLeft >= 0)
+                                                                    @if($daysLeft <= $durationThresholdDays)
+                                                                        <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded">
+                                                                            <p class="font-semibold text-red-800">📅 Durasi Kontrak Akan Berakhir</p>
+                                                                            <p class="text-sm text-red-700">Effective End Date: <strong>{{ $effectiveEnd->format('d M Y') }}</strong></p>
+                                                                            <p class="text-sm text-red-700">Sisa waktu: <strong>{{ $daysLeft }} hari</strong> (di bawah batas {{ $reminderMonths }} bulan)</p>
+                                                                        </div>
+                                                                    @else
+                                                                        <div class="bg-green-50 border-l-4 border-green-500 p-3 rounded">
+                                                                            <p class="font-semibold text-green-800">📅 Durasi Kontrak</p>
+                                                                            <p class="text-sm text-green-700">Effective End Date: <strong>{{ $effectiveEnd->format('d M Y') }}</strong></p>
+                                                                            <p class="text-sm text-green-700">Sisa waktu: <strong>{{ $daysLeft }} hari</strong></p>
+                                                                        </div>
+                                                                    @endif
+                                                                @endif
+                                                            </div>
+                                                            <div class="mt-4 text-center">
+                                                                <a href="{{ route('contracts.show', $contract) }}" class="text-sm text-pertamina-blue hover:underline">Lihat Detail Kontrak →</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -470,6 +382,49 @@
                                                 -
                                             @endif
                                         </td>
+                                        <td class="px-3 py-4 whitespace-nowrap text-center">
+                                            <div class="flex items-center justify-center space-x-2">
+                                                <a href="{{ route('contracts.show', $contract) }}"
+                                                    class="text-pertamina-blue hover:text-pertamina-blue-dark"
+                                                    title="{{ __('contracts.view') }}">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    </svg>
+                                                </a>
+                                                @if(auth()->user()->canEditContracts())
+                                                    <a href="{{ route('contracts.edit', $contract) }}"
+                                                        class="text-yellow-600 hover:text-yellow-800"
+                                                        title="{{ __('contracts.edit') }}">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                        </svg>
+                                                    </a>
+                                                    <form action="{{ route('contracts.destroy', $contract) }}" method="POST"
+                                                        class="inline"
+                                                        onsubmit="return confirm('{{ __('contracts.confirm_delete') }}')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-800"
+                                                            title="{{ __('contracts.delete') }}">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            </svg>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
@@ -480,27 +435,6 @@
                                 @endforelse
                             </tbody>
                         </table>
-
-                        <!-- Header Info Modal -->
-                        <div x-show="showHeaderInfo"
-                             x-transition
-                             class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60"
-                             @click.self="showHeaderInfo = false"
-                             x-cloak>
-                            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto" @click.stop>
-                                <div class="bg-blue-50 border-b border-blue-200 px-5 py-4 rounded-t-xl flex justify-between items-center">
-                                    <h3 class="text-base font-bold text-pertamina-blue flex items-center gap-2" x-text="headerTitle"></h3>
-                                    <button @click="showHeaderInfo = false" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="px-5 py-4">
-                                    <p class="text-sm text-gray-600 leading-relaxed" x-text="headerDesc"></p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Pagination -->

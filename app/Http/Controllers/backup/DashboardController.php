@@ -16,15 +16,6 @@ class DashboardController extends Controller
     {
         $query = Contract::with(['realizations', 'amendments']);
 
-        // Active/Inactive filter (default: active only)
-        $activeStatus = $request->get('active_status', 'active');
-        if ($activeStatus === 'active') {
-            $query->where('is_active', true);
-        } elseif ($activeStatus === 'inactive') {
-            $query->where('is_active', false);
-        }
-        // 'all' shows everything
-
         // Apply filters
         if ($request->filled('field')) {
             $query->where('field', $request->field);
@@ -104,36 +95,13 @@ class DashboardController extends Controller
         $depleteInWarningMonths = Setting::getDepleteInWarningMonths();
         $reminderMonths = Setting::getReminderMonths();
 
-        // Danger filter - post-filter contracts to only show those with warnings
-        $dangerFilter = $request->get('danger', '');
-        if ($dangerFilter === 'warning') {
-            $durationThresholdDays = $reminderMonths * 30;
-            $filtered = $contracts->getCollection()->filter(function ($contract) use ($budgetWarningPercent, $depleteInWarningMonths, $durationThresholdDays) {
-                // Low budget
-                if ($contract->remaining_percent <= $budgetWarningPercent)
-                    return true;
-                // Depleting soon
-                if ($contract->months_until_depleted !== null && $contract->months_until_depleted <= $depleteInWarningMonths)
-                    return true;
-                // Duration expiring
-                $effectiveEnd = \Carbon\Carbon::parse($contract->effective_end_date);
-                $daysLeft = round(now()->diffInDays($effectiveEnd, false));
-                if ($daysLeft >= 0 && $daysLeft <= $durationThresholdDays)
-                    return true;
-                return false;
-            });
-            $contracts->setCollection($filtered);
-        }
-
         return view('dashboard', compact(
             'contracts',
             'sortColumn',
             'sortDirection',
             'budgetWarningPercent',
             'depleteInWarningMonths',
-            'reminderMonths',
-            'activeStatus',
-            'dangerFilter'
+            'reminderMonths'
         ));
     }
 }

@@ -133,11 +133,6 @@
                                     <div class="text-right">
                                         @if($amendment->added_value)
                                             <p class="text-lg font-bold text-blue-800">+ Rp {{ number_format($amendment->added_value, 0, ',', '.') }}</p>
-                                            @php
-                                                $originalValue = (float) $contract->total_value;
-                                                $addedPercent = $originalValue > 0 ? round(((float) $amendment->added_value / $originalValue) * 100, 1) : 0;
-                                            @endphp
-                                            <p class="text-xs text-blue-500">({{ $addedPercent }}% dari nilai kontrak awal)</p>
                                         @else
                                             <p class="text-sm text-gray-500">-</p>
                                         @endif

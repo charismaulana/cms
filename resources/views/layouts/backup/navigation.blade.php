@@ -140,17 +140,9 @@
                 </a>
             @endif
             @if(auth()->user()->isAdmin())
-                <a href="{{ route('users.index') }}"
-                    class="block px-4 py-2 text-sm text-white hover:bg-pertamina-blue-light">
-                    {{ __('nav.users') }}
-                </a>
                 <a href="{{ route('email-recipients.index') }}"
                     class="block px-4 py-2 text-sm text-white hover:bg-pertamina-blue-light">
                     {{ __('nav.email_recipients') }}
-                </a>
-                <a href="{{ route('email-logs.index') }}"
-                    class="block px-4 py-2 text-sm text-white hover:bg-pertamina-blue-light">
-                    Email Logs
                 </a>
                 <a href="{{ route('settings.index') }}"
                     class="block px-4 py-2 text-sm text-white hover:bg-pertamina-blue-light">

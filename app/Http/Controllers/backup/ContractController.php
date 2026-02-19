@@ -98,10 +98,7 @@ class ContractController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'total_value' => 'required|numeric|min:0',
-            'is_active' => 'nullable|boolean',
         ]);
-
-        $validated['is_active'] = $request->boolean('is_active');
 
         $contract->update($validated);
 

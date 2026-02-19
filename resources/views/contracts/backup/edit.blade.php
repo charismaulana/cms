@@ -32,7 +32,8 @@
 
                             <!-- Fungsi -->
                             <div>
-                                <label for="fungsi" class="block text-sm font-medium text-gray-700">Fungsi *</label>
+                                <label for="fungsi"
+                                    class="block text-sm font-medium text-gray-700">Fungsi *</label>
                                 <select id="fungsi" name="fungsi" required
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pertamina-blue focus:ring-pertamina-blue">
                                     @foreach(\App\Models\Contract::getFungsiOptions() as $value => $label)
@@ -152,13 +153,6 @@
                             </div>
                         </div>
 
-                        <!-- Active Status -->
-                        <div class="mt-4 flex items-center gap-2">
-                            <input type="hidden" name="is_active" value="0">
-                            <input type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $contract->is_active) ? 'checked' : '' }} class="rounded border-gray-300 text-pertamina-blue focus:ring-pertamina-blue">
-                            <label for="is_active" class="text-sm font-medium text-gray-700">Kontrak Aktif</label>
-                        </div>
-
                         <div class="mt-6 flex items-center justify-end space-x-4">
                             <a href="{{ route('contracts.show', $contract) }}"
                                 class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition">
@@ -182,8 +176,8 @@
                     @if($contract->amendments->count() > 0)
                         <div class="space-y-4 mb-6">
                             @foreach($contract->amendments as $amendment)
-                                <div class="border rounded-lg p-4 bg-gray-50" x-data="{ editing: false }">
-                                    <div class="flex justify-between items-start" x-show="!editing">
+                                <div class="border rounded-lg p-4 bg-gray-50">
+                                    <div class="flex justify-between items-start">
                                         <div>
                                             <h4 class="font-semibold text-pertamina-blue">
                                                 {{ $amendment->label }}
@@ -206,73 +200,11 @@
                                                 <p class="text-sm text-gray-500 mt-1">{{ $amendment->notes }}</p>
                                             @endif
                                         </div>
-                                        <div class="flex items-center space-x-2">
-                                            <button @click="editing = true"
-                                                class="text-blue-600 hover:text-blue-800 text-sm">Edit</button>
-                                            <form action="{{ route('amendments.destroy', $amendment) }}" method="POST"
-                                                class="inline" onsubmit="return confirm('Hapus amandemen ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="text-red-600 hover:text-red-800 text-sm">Hapus</button>
-                                            </form>
-                                        </div>
-                                    </div>
-
-                                    <!-- Inline Edit Form -->
-                                    <div x-show="editing" x-cloak>
-                                        <form action="{{ route('amendments.update', $amendment) }}" method="POST"
-                                            class="space-y-3">
+                                        <form action="{{ route('amendments.destroy', $amendment) }}" method="POST"
+                                            class="inline" onsubmit="return confirm('Hapus amandemen ini?')">
                                             @csrf
-                                            @method('PUT')
-                                            <div class="flex justify-between items-center mb-2">
-                                                <h4 class="font-semibold text-pertamina-blue">Edit {{ $amendment->label }}</h4>
-                                                <button type="button" @click="editing = false"
-                                                    class="text-gray-500 hover:text-gray-700 text-sm">Batal</button>
-                                            </div>
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                <div>
-                                                    <label class="block text-xs font-medium text-gray-700 mb-1">Tipe
-                                                        Amandemen</label>
-                                                    <select name="amendment_type"
-                                                        class="w-full text-sm border-gray-300 rounded-md">
-                                                        <option value="value_only" {{ $amendment->amendment_type === 'value_only' ? 'selected' : '' }}>Nilai Saja</option>
-                                                        <option value="time_only" {{ $amendment->amendment_type === 'time_only' ? 'selected' : '' }}>Waktu Saja</option>
-                                                        <option value="value_and_time" {{ $amendment->amendment_type === 'value_and_time' ? 'selected' : '' }}>
-                                                            Nilai & Waktu</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label class="block text-xs font-medium text-gray-700 mb-1">Nilai
-                                                        Tambahan</label>
-                                                    <input type="number" name="added_value"
-                                                        value="{{ $amendment->added_value }}" step="0.01"
-                                                        class="w-full text-sm border-gray-300 rounded-md">
-                                                </div>
-                                                <div>
-                                                    <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal Akhir
-                                                        Baru</label>
-                                                    <input type="date" name="new_end_date"
-                                                        value="{{ $amendment->new_end_date ? $amendment->new_end_date->format('Y-m-d') : '' }}"
-                                                        class="w-full text-sm border-gray-300 rounded-md">
-                                                </div>
-                                                <div class="flex items-center gap-2 pt-5">
-                                                    <input type="checkbox" name="is_bridging" value="1" {{ $amendment->is_bridging ? 'checked' : '' }}
-                                                        class="rounded border-gray-300">
-                                                    <label class="text-sm text-gray-700">Bridging</label>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <label class="block text-xs font-medium text-gray-700 mb-1">Catatan</label>
-                                                <textarea name="notes" rows="2"
-                                                    class="w-full text-sm border-gray-300 rounded-md">{{ $amendment->notes }}</textarea>
-                                            </div>
-                                            <div class="flex justify-end">
-                                                <button type="submit"
-                                                    class="px-4 py-1.5 bg-pertamina-blue text-white text-sm rounded-md hover:bg-pertamina-blue-dark">
-                                                    Simpan
-                                                </button>
-                                            </div>
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-800 text-sm">Hapus</button>
                                         </form>
                                     </div>
                                 </div>

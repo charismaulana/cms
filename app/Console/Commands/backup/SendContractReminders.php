@@ -37,18 +37,17 @@ class SendContractReminders extends Command
         }
 
         // Get contracts expiring soon (time-based on end_date)
-        $expiringContracts = Contract::where('is_active', true)
-            ->where('end_date', '<=', Carbon::now()->addMonths($reminderMonths))
+        $expiringContracts = Contract::where('end_date', '<=', Carbon::now()->addMonths($reminderMonths))
             ->where('end_date', '>=', Carbon::now())
             ->get();
 
         // Get contracts with low budget (value-based)
-        $lowBudgetContracts = Contract::where('is_active', true)->get()->filter(function ($contract) use ($budgetWarningPercent) {
+        $lowBudgetContracts = Contract::all()->filter(function ($contract) use ($budgetWarningPercent) {
             return $contract->remaining_percent <= $budgetWarningPercent && $contract->remaining_percent > 0;
         });
 
         // Get contracts with duration expiring soon (based on effective_end_date considering amendments)
-        $allContracts = Contract::with('amendments')->where('is_active', true)->get();
+        $allContracts = Contract::with('amendments')->get();
         $durationExpiringContracts = $allContracts->filter(function ($contract) use ($reminderMonths) {
             $effectiveEndDate = Carbon::parse($contract->effective_end_date);
             return $effectiveEndDate->greaterThanOrEqualTo(Carbon::now())
